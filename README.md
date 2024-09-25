@@ -44,6 +44,29 @@
   - `private static final Logger log = LoggerFactory.getLogger(Xxx.class)` 코드를 자동으로 생성해준다.
   - 롬복을 사용하면 `private static final Logger log = LoggerFactory.getLogger(Xxx.class)` 코드를 자동으로 생성해준다.
 
+### 올바른 로그 사용법
+- `log.debug("data="+data);`
+  - 로그 출력 레벨을 info로 설정해도 해당 코드는 여전히 남아 있음
+- `log.debug("data=", data);`
+  - 로그 출력 레벨을 info로 설정하면 해당 코드는 더 이상 로그 메시지를 생성하지 않음
+
+### 로그 사용시 장점
+- 쓰레드 정보, 클래스 이름 같은 부가 정보를 함께 볼 수 있고, 출력 모양을 조정할 수 있다.
+- 로그 레벨에 따라 개발 서버에서는 모든 로그를 출력하고, 운영 서버에서는 출력하지 않는 등 로그를 상황에 맞게 조절할 수 있다.
+  - 코드는 수정하지 않고 설정만 바꾸면 로그 레벨 변경 가능 
+- 시스템 아웃 콘솔에 출력하는 것이 아니라 파일이나 네트워크 등 로그를 별도의 위치에 남길 수 있다.
+  - 특히 파일로 남길 때는 일별, 특정 용량에 따라 로그를 분할하는 것도 가능하다.
+- 성능도 일단 System.out보다 좋다.(내부 버퍼링, 멀티 쓰레드 등등) 실무에서는 꼭 로그 사용!
+
+
+### 더 공부하실 분
+- 로그에 대해서 더 자세한 내용은 slf4j, logback을 검색해보자.
+  - SLF4J - http://www.slf4j.org
+  - Logback - http://logback.qos.ch
+- 스프링 부트가 제공하는 로그 기능은 다음을 참고하자.
+  - https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot- features.html#boot-features-logging
+
+
 > **참고**  <br>
 > - `@RestController`: 반환값이 String 이면 뷰를 찾는 것이 아니라, HTTP 메시지 바디에 바로 입력
 > - `@Controller`: 반환값이 String 이면 viewName 으로 인식하기 떄문에 뷰를 찾고 뷰가 랜더링 됨
