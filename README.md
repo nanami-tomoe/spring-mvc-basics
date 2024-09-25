@@ -9,7 +9,8 @@
   - Jar를 사용하면 항상 내장 서버(톰캣등)를 사용하고, `webapp` 경로도 사용하지 않습니다. 내장 서버 사용에 최적 화 되어 있는 기능 
   - 최근에는 주로 이 방식을 사용
   - War를 사용하면 내장 서버도 사용가능 하지만, 주로 외부 서버에 배포하는 목적으로 사용
-### Welcome 페이지 만들기
+
+### [Welcome 페이지 만들기](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/resources/static/index.html)
 - 스프링 부트에 `Jar` 를 사용하면 `/resources/static/` 위치에 `index.html` 파일을 두면 Welcome 페이지로 처리해준다. 
 - 스프링 부트가 지원하는 정적 컨텐츠 위치에 `/index.html` 이 있으면 된다.
 > **참고** <br>
@@ -17,7 +18,6 @@
 > [https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot- features.html\#boot-features-spring-mvc-welcome-page]()
 
 ## 로깅 간단히 알아보기
-
 
 ### 로깅 라이브러리
 - 인터페이스: `SKF4J`
@@ -31,7 +31,7 @@
 ### 로그 호출
 - `log.info("hello")`
 
-### 테스트
+### 테스트 [LogTestController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/LogTestController.java)
 - 로그가 출력되는 포멧 확인
   - 시간, 로그 레벨, 프로세스 ID, 쓰레드 명, 클래스명, 로그 메시지
 - 로그 레벨 설정을 변경해서 출력 결과 보기
@@ -43,6 +43,8 @@
   - 롬복이 제공하는 기능
   - `private static final Logger log = LoggerFactory.getLogger(Xxx.class)` 코드를 자동으로 생성해준다.
   - 롬복을 사용하면 `private static final Logger log = LoggerFactory.getLogger(Xxx.class)` 코드를 자동으로 생성해준다.
+
+### [로그 레벨 설정](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/resources/application.properties)
 
 ### 올바른 로그 사용법
 - `log.debug("data="+data);`
@@ -67,6 +69,30 @@
   - https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot- features.html#boot-features-logging
 
 
-> **참고**  <br>
-> - `@RestController`: 반환값이 String 이면 뷰를 찾는 것이 아니라, HTTP 메시지 바디에 바로 입력
-> - `@Controller`: 반환값이 String 이면 viewName 으로 인식하기 떄문에 뷰를 찾고 뷰가 랜더링 됨
+## 요청 매핑
+### [MappingController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/requestmapping/MappingController.java)
+
+### 매핑 정보
+- `@RestController`
+  - `@Controller` 는 반환 값이 `String` 이면 뷰 이름으로 인식된다. 그래서 **뷰를 찾고 뷰가 랜더링** 된다.
+  - `@RestController` 는 반환 값으로 뷰를 찾는 것이 아니라, **HTTP 메시지 바디에 바로 입력**한다. 따라서 실행 결과로 ok 메세지를 받을 수 있다. `@ResponseBody` 와 관련이 있는데, 뒤에서 더 자세히 설명한다. `@RequestMapping("/hello-basic")`
+- `/hello-basic` URL 호출이 오면 이 메서드가 실행되도록 매핑한다.
+  - 대부분의 속성을 `배열[]` 로 제공하므로 다중 설정이 가능하다. `{"/hello-basic", "/hello-go"}`
+
+### 스프링 부트 3.0 이전과 이후
+- **이전**
+  - 매핑: `/hello-basic`
+  - URL 요청: `/hello-basic` , `/hello-basic/`
+- **이후**
+  - 매핑: `/hello-basic` -> URL요청: `/hello-basic`
+  - 매핑: `/hello-basic/` -> URL요청: `/hello-basic/`
+- **정리**: 이전에는 슬래시를 끝에 붙이지 않아도 처리가 되었지만, 이후에는 정확하게 매핑해야 한다.
+
+### @PathVariable(경로 변수) 사용
+- 최근 HTTP API는 다음과 같이 리소스 경로에 식별자를 넣는 스타일을 선호한다.
+  - `/mapping/userA`
+  - `/users/1`
+- `@RequestMapping` 은 URL 경로를 템플릿화 할 수 있는데, `@PathVariable` 을 사용하면 매칭 되는 부분을 편리하게 조회할 수 있다.
+- `@PathVariable` 의 이름과 파라미터 이름이 같으면 생략할 수 있다.
+- 다중 매핑도 가능하다.
+
