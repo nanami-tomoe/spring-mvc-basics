@@ -96,3 +96,57 @@
 - `@PathVariable` 의 이름과 파라미터 이름이 같으면 생략할 수 있다.
 - 다중 매핑도 가능하다.
 
+## 요청 매핑 예시
+
+### 회원 관리 API
+- 회원 목록 조회: GET `/users`
+- 회원 등록: POST `/users`
+- 회원 조회: GET `/users/{userId}`
+- 회원 수정: PATCH `/users/{userId}`
+- 회원 삭제: DELETE `/users/{userId}`
+
+### [MappingController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/requestmapping/MappingClassController.java)
+
+## HTTP 요청 - 기본, 헤더 조회
+
+### [RequestHeaderController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/request/RequestHeaderController.java)
+- `HttpServletRequest`
+- `HttpServletResponse`
+- `HttpMethod` : HTTP 메서드를 조회한다. `org.springframework.http.HttpMethod` 
+- `Locale` : Locale 정보를 조회한다.
+  - 사용자 인터페이스(UI)에서 사용되는 언어(ISO 639-1 codes 표준 형식), 지역 설정(ISO 3166-1 표준 형식), 출력 방식(Character Set 또는 ISO 8859-1, UTF-8 등의 인코딩 식별자) 등을 정의하는 문자열이다
+  - 형식: `language[_territory][.codeset][@modifier]`
+  - 예시: `en`, `en_US`, `en_US.UTF-8`, `ko_KR.euc-kr`
+- `@RequestHeader MultiValueMap<String, String> headerMap`
+  - 모든 HTTP 헤더를 MultiValueMap 형식으로 조회한다. 
+- `@RequestHeader("host") String host`
+  - 특정 HTTP 헤더를 조회한다. 
+  - 속성
+    - 필수 값 여부: `required`
+    - 기본 값 속성: `defaultValue`
+- `@CookieValue(value = "myCookie", required = false) String cookie`
+  - 특정 쿠키를 조회한다. 
+  - 속성
+    - 필수 값 여부: `required` 
+    - 기본 값: `defaultValue`
+
+- MultiValueMap
+  - Map과 유사한데, 하나의 키에 여러 값을 받을 수 있다.
+  - HTTP header, HTTP 쿼리 파라미터와 같이 하나의 키에 여러 값을 받을 때 사용한다.
+    - **keyA=value1&keyA=value2**
+
+```java
+MultiValueMap<String, String> map = new LinkedMultiValueMap();
+map.add("keyA", "value1");
+map.add("keyA", "value2");
+//[value1,value2]
+List<String> values = map.get("keyA");
+```
+
+> **참고** <br>
+> `@Controller` 의 사용 가능한 파라미터 목록은 다음 공식 메뉴얼에서 확인할 수 있다. <br>
+> https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-arguments
+
+> **참고** <br>
+> `@Controller` 의 사용 가능한 응답 값 목록은 다음 공식 메뉴얼에서 확인할 수 있다. <br>
+> https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-return-types
