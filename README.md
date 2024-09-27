@@ -150,3 +150,45 @@ List<String> values = map.get("keyA");
 > **참고** <br>
 > `@Controller` 의 사용 가능한 응답 값 목록은 다음 공식 메뉴얼에서 확인할 수 있다. <br>
 > https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-return-types
+
+## HTTP 요청 - 쿼리 파라미터, HTML Form
+
+### HTTP 요청 개요
+**클라이언트에서 서버로 요청 데이터를 전달할 때는 주로 다음 3가지 방법을 사용한다.** 
+- **GET - 쿼리 파라미터**
+  - /url**?username=hello&age=20**
+  - 메시지 바디 없이, URL의 쿼리 파라미터에 데이터를 포함해서 전달 
+  - 예) 검색, 필터, 페이징등에서 많이 사용하는 방식
+- **POST - HTML Form**
+  - content-type: application/x-www-form-urlencoded
+  - 메시지 바디에 쿼리 파리미터 형식으로 전달 username=hello&age=20 예) 회원 가입, 상품 주문, HTML Form 사용
+- **HTTP message body**에 데이터를 직접 담아서 요청 
+  - HTTP API에서 주로 사용, JSON, XML, TEXT 
+  - 데이터 형식은 주로 JSON 사용
+  - POST, PUT, 
+
+### 요청 파라미터 - 쿼리 파라미터, HTML Form
+
+- **GET, 쿼리 파라미터 전송** 
+  - `http://localhost:8080/request-param?username=hello&age=20` 
+
+- **POST, HTML Form 전송**
+  - ```
+    POST /request-param ...
+    content-type: application/x-www-form-urlencoded
+    
+    username=hello&age=20
+    ```
+
+- GET 쿼리 파리미터 전송 방식이든, POST HTML Form 전송 방식이든 둘다 형식이 같으므로 구분없이 조회할 수 있다.
+- 이것을 간단히 **요청 파라미터(request parameter) 조회**라 한다.
+
+### [RequestParamController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/request/RequestParamController.java)
+- **request.getParameter()**
+  - 여기서는 단순히 HttpServletRequest가 제공하는 방식으로 요청 파라미터를 조회했다.
+- [**Post Form 페이지 생성**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/resources/static/basic/hello-form.html)
+  - 테스트용 HTML Form 생성
+  - 리소스는 `/resources/static` 아래에 두면 스프링 부트가 자동으로 인식한다.
+
+> **참고** <br>
+> `Jar` 를 사용하면 `webapp` 경로를 사용할 수 없다. 이제부터 정적 리소스도 클래스 경로에 함께 포함해야 한다.
