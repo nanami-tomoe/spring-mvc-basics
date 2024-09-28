@@ -71,7 +71,7 @@
 
 ## 요청 매핑
 ### [MappingController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/requestmapping/MappingController.java)
-
+- 위 클래스 참고
 ### 매핑 정보
 - `@RestController`
   - `@Controller` 는 반환 값이 `String` 이면 뷰 이름으로 인식된다. 그래서 **뷰를 찾고 뷰가 랜더링** 된다.
@@ -96,20 +96,30 @@
 - `@PathVariable` 의 이름과 파라미터 이름이 같으면 생략할 수 있다.
 - 다중 매핑도 가능하다.
 
-## 요청 매핑 예시
+### 요청 매핑 예시
+- [MappingController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/requestmapping/MappingController.java)
+  - 위 클래스 참고
+- 회원 관리 API
+  - 회원 목록 조회: GET `/users`
+  - 회원 등록: POST `/users`
+  - 회원 조회: GET `/users/{userId}`
+  - 회원 수정: PATCH `/users/{userId}`
+  - 회원 삭제: DELETE `/users/{userId}`
 
-### 회원 관리 API
-- 회원 목록 조회: GET `/users`
-- 회원 등록: POST `/users`
-- 회원 조회: GET `/users/{userId}`
-- 회원 수정: PATCH `/users/{userId}`
-- 회원 삭제: DELETE `/users/{userId}`
+## HTTP 요청
+**HTTP 요청은 다음과 같이 분류할 수 있다.**
+- 기본 헤더 조회
+- 요청 데이터 조회
+  - 요청 파라미터
+    - GET - 쿼리 파라미터
+    - POST - HTML Form
+  - 요청 메세지
+    - HTTP message body**에 데이터를 직접 담아서 요청
 
-### [MappingController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/requestmapping/MappingClassController.java)
+### HTTP 요청 - 기본, 헤더 조회
 
-## HTTP 요청 - 기본, 헤더 조회
-
-### [RequestHeaderController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/request/RequestHeaderController.java)
+[**RequestHeaderController**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/request/RequestHeaderController.java)
+- 위 클래스 참고
 - `HttpServletRequest`
 - `HttpServletResponse`
 - `HttpMethod` : HTTP 메서드를 조회한다. `org.springframework.http.HttpMethod` 
@@ -151,9 +161,7 @@ List<String> values = map.get("keyA");
 > `@Controller` 의 사용 가능한 응답 값 목록은 다음 공식 메뉴얼에서 확인할 수 있다. <br>
 > https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-return-types
 
-## HTTP 요청 - 쿼리 파라미터, HTML Form
-
-### HTTP 요청 개요
+### HTTP 요청 데이터 개요
 **클라이언트에서 서버로 요청 데이터를 전달할 때는 주로 다음 3가지 방법을 사용한다.** 
 - **GET - 쿼리 파라미터**
   - /url**?username=hello&age=20**
@@ -165,7 +173,7 @@ List<String> values = map.get("keyA");
 - **HTTP message body**에 데이터를 직접 담아서 요청 
   - HTTP API에서 주로 사용, JSON, XML, TEXT 
   - 데이터 형식은 주로 JSON 사용
-  - POST, PUT, 
+  - POST, PUT, PATCH
 
 ### 요청 파라미터 - 쿼리 파라미터, HTML Form
 
@@ -418,6 +426,6 @@ setUsername();
 > 지금까지 한 것은 HTTP 요청 방법 중 
 > 1. GET - 쿼리 파라미터
 > 2. POST = HTML Form 
-> 3. HTTP message body**에 데이터를 직접 담아서 요청 
+> 3. HTTP message body에 데이터를 직접 담아서 요청 
 > 
 > 위 3가지 중 1, 2번인 요청 파라미터를 알아본 것이고 아래부터는 3번인 HTTP message body에 데이터를 직접 담아서 요청하는 방법을 알아본다.
