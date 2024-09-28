@@ -672,9 +672,9 @@ public String requestBodyJsonV3(@RequestBody HelloData data) {
   - JSP와 비슷한 형식으로 HTML을 만들 수 있다.
   - Thymeleaf 공식 사이트: https://www.thymeleaf.org/
 
-[**hello.html - 뷰 템플릿 생성**]()
+[**hello.html - 뷰 템플릿 생성**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/resources/templates/response/hello.html)
 
-[**ResponseViewController - 뷰 템플릿을 호출하는 컨트롤러**]()
+[**ResponseViewController - 뷰 템플릿을 호출하는 컨트롤러**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/response/ResponseViewController.java)
 
 ```java
 @RequestMapping("/response-view-v1")
