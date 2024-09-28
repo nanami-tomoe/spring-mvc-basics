@@ -672,9 +672,9 @@ public String requestBodyJsonV3(@RequestBody HelloData data) {
   - JSP와 비슷한 형식으로 HTML을 만들 수 있다.
   - Thymeleaf 공식 사이트: https://www.thymeleaf.org/
 
-[**hello.html - 뷰 템플릿 생성**]()
+[**hello.html - 뷰 템플릿 생성**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/resources/templates/response/hello.html)
 
-[**ResponseViewController - 뷰 템플릿을 호출하는 컨트롤러**]()
+[**ResponseViewController - 뷰 템플릿을 호출하는 컨트롤러**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/response/ResponseViewController.java)
 
 ```java
 @RequestMapping("/response-view-v1")
@@ -713,3 +713,65 @@ public void responseViewV3(Model model) {
 > **참고** 
 > - HTML이나 뷰 템플릿을 사용해도 HTTP 응답 메시지 바디에 HTML 데이터가 담겨서 전달된다. 
 > - 여기서 설명하 는 내용은 정적 리소스나 뷰 템플릿을 거치지 않고, 직접 HTTP 응답 메시지를 전달하는 경우를 말한다.
+
+[**ResponseBodyController**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/response/ResponseBodyController.java)
+```java
+@Slf4j
+//@Controller
+//@ResponseBody
+@RestController
+public class ResponseBodyController {
+
+  /**
+   * 서블릿 다룰 때 처럼 직접 다룸
+   */
+  @GetMapping("/response-body-string-v1")
+  public void responseBodyStringV1(HttpServletResponse response) throws IOException {
+    response.getWriter().write("ok");
+  }
+
+  /**
+   * ResponseEntity(Http Status 추가)는 ResponseEntity를 상속받는다
+   * HTTP 메시지의 헤더, 바디 정보를 가지고 있다
+   * @return
+   */
+  @GetMapping("/response-body-string-v2")
+  public ResponseEntity<String> responseBodyV2() {
+    return new ResponseEntity<>("ok", HttpStatus.OK);
+  }
+
+//  @ResponseBody // view를 사용하지 않고, HTTP 메시지 컨버터를 통해서 HTTP 메시지를 직접 입력
+  @GetMapping("/response-body-string-v3")
+  public String responseBodyV3() {
+    return "ok";
+  }
+
+  /**
+   * HTTP 메시지 컨버터를 통해서 JSON 형식으로 변환
+   */
+  @GetMapping("/response-body-json-v1")
+  public ResponseEntity<HelloData> responseBodyJsonV1() {
+    HelloData helloData = new HelloData();
+    helloData.setUsername("userA");
+    helloData.setAge(20);
+
+    return new ResponseEntity<>(helloData, HttpStatus.OK);
+  }
+
+  @ResponseStatus(HttpStatus.OK) // 응답 코드를 동적으로 변경은 불가능
+//  @ResponseBody
+  @GetMapping("/response-body-json-v2")
+  public HelloData responseBodyJsonV2() {
+    HelloData helloData = new HelloData();
+    helloData.setUsername("userA");
+    helloData.setAge(20);
+    return helloData;
+  }
+}
+```
+
+- **@RestController**
+  - `@Controller` 대신에 `@RestController` 애노테이션을 사용하면, 해당 컨트롤러에 모두 `@ResponseBody` 가 적용되는 효과가 있다. 
+  - 따라서 뷰 템플릿을 사용하는 것이 아니라, HTTP 메시지 바디에 직접 데이터를 입력한다. 이름 그대로 Rest API(HTTP API)를 만들 때 사용하는 컨트롤러이다. 
+  - 참고로 `@ResponseBody` 는 클래스 레벨에 두면 전체 메서드에 적용되는데, `@RestController` 에노테이션 안에 `@ResponseBody`와 `@Controller` 가 적용되어 있다.
+
