@@ -183,7 +183,7 @@ List<String> values = map.get("keyA");
 - GET 쿼리 파리미터 전송 방식이든, POST HTML Form 전송 방식이든 둘다 형식이 같으므로 구분없이 조회할 수 있다.
 - 이것을 간단히 **요청 파라미터(request parameter) 조회**라 한다.
 
-### [RequestParamController](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/request/RequestParamController.java)
+[**RequestParamController**](https://github.com/nanami-tomoe/spring-mvc-basics/blob/master/src/main/java/hello/springmvc/basic/request/RequestParamController.java)
 ```java
     @RequestMapping("/request-param-v1")
     public void requestParamV1(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -203,7 +203,7 @@ List<String> values = map.get("keyA");
 > **참고** <br>
 > `Jar` 를 사용하면 `webapp` 경로를 사용할 수 없다. 이제부터 정적 리소스도 클래스 경로에 함께 포함해야 한다.
 
-## 요청 파라미터 - @RequestParam
+### 요청 파라미터 - @RequestParam
 
 **requestParamV2**
 ```java
@@ -344,3 +344,80 @@ public String requestParamMap(@RequestParam Map<String, Object> paramMap) {
 > **💡실무에서는?** 
 > - 보통 파라미터는 하나를 쓴다. 
 > - 애매하게 두개 이상 쓰는 경우는 많지 않다.
+
+### HTTP 요청 - @ModelAttribute
+- 실제 개발을 하면 요청 파라미터를 받아서 필요한 객체를 만들고 그 객체에 값을 넣어주어야 한다. 
+- 스프링은 이 과정을 완전히 자동화해주는 `@ModelAttribute` 기능을 제공한다.
+
+**바인딩 받을 객체 - HelloData**
+```java
+package hello.springmvc.basic;
+import lombok.Data;
+@Data
+public class HelloData {
+private String username;
+private int age;
+}
+```
+
+**@ModelAttribute 적용 - modelAttributeV1**
+```java
+    /**
+     * @ModelAttribute 사용
+     * 참고: model.addAttribute(helloData) 코드도 함께 자동 적용됨, 뒤에 model을 설명할 때 자세히
+    설명
+     */
+    @ResponseBody
+    @RequestMapping("/model-attribute-v1")
+    public String modelAttributeV1(@ModelAttribute HelloData helloData) {
+        log.info("username={}, age={}", helloData.getUsername(),
+                helloData.getAge());
+        return "ok";
+    }
+```
+- `HelloData` 객체가 생성되고, 요청 파라미터의 값도 모두 들어가 있다.
+- 스프링MVC는 `@ModelAttribute`가 있으면 다음을 실행한다.
+  - `HelloData` 객체를 생성
+  - 요청 파라미터의 이름으로 `HelloData` 객체의 프로퍼티를 찾고 해당 프로퍼티의 setter를 호출해서 파라미터의 값을 입력(바인딩) 한다.
+  - 예) 파라미터의 이름이 username이면 `setUsername()` 메서드를 호출하면서 값을 입력한다.
+
+**프로퍼티**
+- 객체에 `getUsername()` , `setUsername()` 메서드가 있으면, 이 객체는 `username` 이라는 프로퍼티를 가지고 있 다.
+- `username` 프로퍼티의 값을 변경하면 `setUsername()` 이 호출되고, 조회하면 `getUsername()` 이 호출된다. ```
+```java
+class HelloData {
+getUsername();
+setUsername();
+}
+```
+**바인딩 오류**
+- `age=abc` 처럼 숫자가 들어가야 할 곳에 문자를 넣으면 `BindException` 이 발생한다. 이런 바인딩 오류를 처리하는 방법은 검증 부분에서 다룬다.
+
+**@ModelAttribute 생략 - modelAttributeV2**
+```java
+    /**
+     * @ModelAttribute 생략 가능
+     * String, int 같은 단순 타입 = @RequestParam
+     * argument resolver 로 지정해둔 타입 외 = @ModelAttribute */
+    @ResponseBody
+    @RequestMapping("/model-attribute-v2")
+    public String modelAttributeV2(HelloData helloData) {
+        log.info("username={}, age={}", helloData.getUsername(),
+                helloData.getAge());
+        return "ok";
+    }
+```
+- `@ModelAttribute`는 생략할 수 있다.
+- 그런데 `@RequestParam`도 생랼할 수 있으니 혼란이 발생할 수 있다.
+- 위와 같은 문제에서 스프링은 다음 규칙을 적용
+  - `Stringg`, `int`, `Integer` 같은 단순 타입 = @RequestParam
+  - 나머지 = `@ModelAttribute` (argument resolver 로 지정해준 타입 외)
+    - `argument resolver`는 뒤에서 설명한다.
+
+> **✅️ 정리** <br>
+> 지금까지 한 것은 HTTP 요청 방법 중 
+> 1. GET - 쿼리 파라미터
+> 2. POST = HTML Form 
+> 3. HTTP message body**에 데이터를 직접 담아서 요청 
+> 
+> 위 3가지 중 1, 2번인 요청 파라미터를 알아본 것이고 아래부터는 3번인 HTTP message body에 데이터를 직접 담아서 요청하는 방법을 알아본다.
